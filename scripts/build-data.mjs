@@ -1,0 +1,158 @@
+// Builds data/mar.json from the fetched sources (.sources/ or --src DIR).
+//
+//   node scripts/build-data.mjs [--src .sources]
+//
+// EUR-Lex acts are parsed from XHTML; ESMA PDFs from the line files produced by
+// scripts/pdf_lines.py (generated here when missing and Python + pdfplumber are available).
+// Every guidance unit is scanned for article references, which link it to the provisions
+// it interprets.
+
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { dirname, join } from 'node:path';
+import { EURLEX, ESMA } from './sources.mjs';
+import { parseAct } from './lib/eurlex.mjs';
+import { parsePdfLines } from './lib/pdfdoc.mjs';
+import { findCitations } from './lib/citations.mjs';
+
+const arg = (n) => {
+  const i = process.argv.indexOf(n);
+  return i === -1 ? null : process.argv[i + 1];
+};
+const src = arg('--src') || '.sources';
+const outFile = arg('--out') || 'data/mar.json';
+const MAX_UNIT = 4000; // characters; longer guidance sections are split at paragraph numbers
+
+const manifest = JSON.parse(readFileSync(join(src, 'manifest.json'), 'utf8'));
+const registry = new Map([...EURLEX, ...ESMA].map((e) => [e.id, e]));
+
+function pdfLines(id, { tables = false } = {}) {
+  // Documents read with table detection get their own cache file.
+  const out = join(src, 'lines', `${id}${tables ? '.t' : ''}.jsonl`);
+  if (!existsSync(out)) {
+    mkdirSync(join(src, 'lines'), { recursive: true });
+    const args = [new URL('./pdf_lines.py', import.meta.url).pathname, join(src, manifest[id].file), ...(tables ? ['--tables'] : [])];
+    const text = execFileSync('python3', args, { maxBuffer: 1 << 28 });
+    writeFileSync(out, text);
+  }
+  return readFileSync(out, 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+}
+
+// Splits a long section at "(n)" (or, with numberedParas, "n.") paragraph starts into parts
+// of at most MAX_UNIT characters.
+function splitSection(text, { lines = false, numberedParas = false } = {}) {
+  if (text.length <= MAX_UNIT) return [text];
+  const paras = text.split(numberedParas ? /\n(?=\d{1,3}\.\s)/ : /\n(?=\(\d{1,4}\)\s)/);
+  const parts = [];
+  let cur = '';
+  for (const p of paras) {
+    if (cur && cur.length + p.length > MAX_UNIT) {
+      parts.push(cur);
+      cur = p;
+    } else cur = cur ? `${cur}\n${p}` : p;
+  }
+  if (cur) parts.push(cur);
+  // Parts still too long (tables, unnumbered text) are split at line breaks; only for the
+  // documents read with table detection, so the other documents keep their units.
+  return parts.flatMap((p) => {
+    if (!lines || p.length <= MAX_UNIT * 1.5) return [p];
+    const out = [];
+    let c = '';
+    for (const line of p.split('\n')) {
+      if (c && c.length + line.length > MAX_UNIT) {
+        out.push(c);
+        c = line;
+      } else c = c ? `${c}\n${line}` : line;
+    }
+    if (c) out.push(c);
+    return out;
+  });
+}
+
+// Ranking weight of a section (scripts/sources.mjs `rank`): data fields and annexes keep 1;
+// `chapters` (a pattern on the section number) and introduction / legal framework sections
+// ("framework") get the configured weight. Used for the reporting manuals, whose general
+// chapters restate the law and otherwise crowd out the provisions and Q&As.
+const FRAMEWORK = /^(introduction|legal framework|scope and purpose|target audience|esma contacts|contacts|market monitoring|front matter)/i;
+function rankWeight(reg, num, title) {
+  const r = reg.rank;
+  if (!r || /, field \(|^Annex /.test(num)) return 1;
+  if (r.chapters && r.chapters.test(num)) return r.weight;
+  if (r.framework && FRAMEWORK.test(title || '')) return r.weight;
+  return 1;
+}
+
+const paraRange = (t, numbered = false) => {
+  const nums = [...t.matchAll(numbered ? /^(\d{1,3})\.\s/gm : /^\((\d{1,4})\)\s/gm)].map((m) => +m[1]);
+  return nums.length ? (nums.length === 1 ? `para. (${nums[0]})` : `paras. (${nums[0]})–(${nums[nums.length - 1]})`) : null;
+};
+
+const docs = [];
+const units = [];
+for (const [id, m] of Object.entries(manifest)) {
+  const reg = registry.get(id);
+  if (!reg) continue;
+  const doc = { id, title: reg.title, short: reg.short, layer: reg.layer, url: m.sourceUrl || m.url, fetchedAt: m.fetchedAt, sha256: m.sha256 };
+  if (m.celex) doc.celex = m.celex;
+  if (reg.weight != null) doc.weight = reg.weight;
+  docs.push(doc);
+
+  if (m.file.endsWith('.html')) {
+    const { units: u } = parseAct(readFileSync(join(src, m.file), 'utf8'), { doc: id });
+    for (const x of u) units.push(x);
+    continue;
+  }
+
+  const { tables, ...pdfOpts } = reg.pdf || {};
+  const sections = parsePdfLines(pdfLines(id, { tables }), { doc: id, qa: !!reg.qa, numberedParas: !!reg.numberedParas, ...pdfOpts });
+  const seen = new Map();
+  for (const s of sections) {
+    // Front matter of the long documents is a cover page and a list of related documents.
+    if (s.num === '0' && !reg.keepFrontMatter && sections.length > 12) continue;
+    if (!s.text) continue;
+    // Lists of abbreviations only add noise to search.
+    if (/^(?:annex\s*\d*\s*:?\s*)?(?:list of )?abbreviations$/i.test(s.title.trim())) continue;
+    // Withdrawn Q&As ("[removed …]", "[deleted]") are stubs.
+    if (/^\[(?:removed|merged|deleted)\b|\[(?:removed|deleted)\]/i.test(s.title) && s.text.length < 400) continue;
+    let num = s.num;
+    if (seen.has(num)) num = `${num}${'′'.repeat(seen.get(num))}`; // duplicate numbering (summary tables)
+    seen.set(s.num, (seen.get(s.num) || 0) + 1);
+    const parts = splitSection(s.text, { lines: !!tables, numberedParas: !!reg.numberedParas });
+    parts.forEach((t, i) => {
+      const cites = findCitations(`${s.title}\n${t}\n${s.notes.join('\n')}`);
+      const w = rankWeight(reg, num, s.title);
+      units.push({
+        d: id,
+        k: 'section',
+        ...(w !== 1 ? { w } : {}),
+        n: parts.length > 1 ? `${num}~${i + 1}` : num,
+        b: s.title,
+        t,
+        pg: s.page,
+        ...(paraRange(t, reg.numberedParas) ? { pr: paraRange(t, reg.numberedParas) } : {}),
+        ...(s.notes.length && i === parts.length - 1 ? { fn: s.notes } : {}),
+        ...(cites.length ? { l: cites.map((c) => c.id) } : {}),
+      });
+    });
+  }
+}
+
+// Recitals and articles of the acts cite each other too (Level 2 acts → MAR, Listing Act → MAR).
+for (const u of units) {
+  if (u.l || u.k === 'section') continue;
+  const cites = findCitations(u.t).filter((c) => !c.id.startsWith(`${u.d}/`));
+  if (cites.length) u.l = cites.map((c) => c.id);
+}
+
+// snapshot: when a source last changed. checked: when the sources were last checked for
+// changes (the fetch run before this build; falls back to the snapshot).
+const snapshot = docs.map((d) => d.fetchedAt).sort().pop();
+const checkedFile = join(src, 'checked.txt');
+const checked = existsSync(checkedFile) ? readFileSync(checkedFile, 'utf8').trim() : snapshot;
+mkdirSync(dirname(outFile), { recursive: true });
+writeFileSync(outFile, JSON.stringify({ snapshot, checked, docs, units }));
+const byDoc = {};
+for (const u of units) byDoc[u.d] = (byDoc[u.d] || 0) + 1;
+const linked = units.filter((u) => u.k === 'section' && u.l).length;
+console.log(Object.entries(byDoc).map(([d, n]) => `  ${d.padEnd(26)} ${n}`).join('\n'));
+console.log(`✓ ${docs.length} documents, ${units.length} units (${linked} guidance units linked to provisions) → ${outFile}`);

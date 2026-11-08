@@ -1,0 +1,7 @@
+node_modules/
+.wrangler/
+.dev.vars
+.sources/
+.vektor/
+data/mar.json
+.vectors/

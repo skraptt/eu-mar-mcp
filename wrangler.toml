@@ -1,0 +1,17 @@
+name = "eu-mar-mcp"
+main = "src/worker.mjs"
+compatibility_date = "2026-10-01"
+
+# The data file (data/mar.json) is bundled at build time; no request reads files.
+# Request logging is off: the server keeps no record of queries.
+[observability]
+enabled = false
+
+# Semantic search: the query is embedded with Workers AI and the nearest units are looked
+# up in Vectorize (src/semantic.mjs). The index is prepared by the deploy workflow.
+[ai]
+binding = "AI"
+
+[[vectorize]]
+binding = "VEC"
+index_name = "eu-mar"

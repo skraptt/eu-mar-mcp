@@ -1,0 +1,19 @@
+{
+  "name": "eu-mar-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the EU Market Abuse Regulation (MAR): the regulation, its delegated and implementing acts and ESMA guidance, linked article by article, with a MAR\u2013REMIT crosswalk",
+  "type": "module",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "fetch": "node scripts/fetch.mjs",
+    "build": "node scripts/build-data.mjs",
+    "pretest": "node -e \"process.exit(require('fs').existsSync('.sources/manifest.json')?0:1)\" && node scripts/build-data.mjs || echo 'No fetched sources: running fixture tests only.'",
+    "test": "node --test test/*.test.mjs",
+    "dev": "node scripts/serve.mjs",
+    "deploy": "npx wrangler@4 deploy"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

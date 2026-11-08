@@ -1,0 +1,44 @@
+{
+  "MAR": {
+    "id": "MAR",
+    "file": "raw/MAR.html",
+    "layer": "regulation",
+    "short": "MAR",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02014R0596-20241204",
+    "sourceUrl": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02014R0596-20241204",
+    "fetchedAt": "2026-11-08T00:00:00.000Z",
+    "sha256": "fixture",
+    "celex": "02014R0596-20241204"
+  },
+  "DR-2016-957": {
+    "id": "DR-2016-957",
+    "file": "raw/DR-2016-957.html",
+    "layer": "implementing",
+    "short": "Del. Reg. 2016/957",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0957",
+    "sourceUrl": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0957",
+    "fetchedAt": "2026-11-08T00:00:00.000Z",
+    "sha256": "fixture",
+    "celex": "32016R0957"
+  },
+  "ESMA-QA": {
+    "id": "ESMA-QA",
+    "file": "raw/ESMA-QA.pdf",
+    "layer": "guidance",
+    "short": "ESMA Q&A",
+    "url": "https://www.esma.europa.eu/sites/default/files/library/esma70-145-111_qa_on_mar.pdf",
+    "sourceUrl": "https://www.esma.europa.eu/sites/default/files/library/esma70-145-111_qa_on_mar.pdf",
+    "fetchedAt": "2026-11-08T00:00:00.000Z",
+    "sha256": "fixture"
+  },
+  "ESMA-GL-DELAY": {
+    "id": "ESMA-GL-DELAY",
+    "file": "raw/ESMA-GL-DELAY.pdf",
+    "layer": "guidance",
+    "short": "ESMA delay guidelines",
+    "url": "https://www.esma.europa.eu/example-delay.pdf",
+    "sourceUrl": "https://www.esma.europa.eu/example-delay.pdf",
+    "fetchedAt": "2026-11-08T00:00:00.000Z",
+    "sha256": "fixture"
+  }
+}
