@@ -17,14 +17,14 @@
 
 export const EURLEX = [
   // ---- Level 1 ----
-  { id: 'MAR', title: 'Regulation (EU) No 596/2014 on market abuse (Market Abuse Regulation, MAR), consolidated', short: 'MAR', layer: 'regulation', celex: '32014R0596', weight: 1.6, verifyTitle: /market abuse/i },
+  { id: 'MAR', title: 'Regulation (EU) No 596/2014 on market abuse (Market Abuse Regulation, MAR), consolidated', short: 'MAR', layer: 'regulation', celex: '32014R0596', weight: 1.6, annexTitles: { 'ANNEX I': 'Indicators of manipulative behaviour (Article 12(3))' }, verifyTitle: /market abuse/i },
   // Consolidated texts carry no recitals; MAR's recitals come from the original text.
   { id: 'MAR-2014', title: 'Regulation (EU) No 596/2014 (MAR), original text of 16 April 2014 – recitals', short: 'MAR (2014 text)', layer: 'regulation', celex: '32014R0596', original: true, kinds: ['recital'], verifyTitle: /market abuse/i },
   { id: 'LISTING-ACT', title: 'Regulation (EU) 2024/2809 (Listing Act) amending Regulations (EU) 2017/1129, (EU) No 596/2014 and (EU) No 600/2014', short: 'Reg. 2024/2809 (Listing Act)', layer: 'regulation', celex: '32024R2809', weight: 0.7, verifyTitle: /596\/2014/ },
   { id: 'CSMAD', title: 'Directive 2014/57/EU on criminal sanctions for market abuse (CS MAD)', short: 'CS MAD', layer: 'regulation', celex: '32014L0057', verifyTitle: /criminal sanctions/i },
 
   // ---- Level 2: delegated regulations (RTS and delegated acts) ----
-  { id: 'DR-2016-522', title: 'Commission Delegated Regulation (EU) 2016/522: third-country public bodies, indicators of market manipulation, disclosure thresholds, notification of delays, managers\' transactions', short: 'Del. Reg. 2016/522', layer: 'implementing', celex: '32016R0522', annexLinks: { 'ANNEX I': ['MAR/6'], 'ANNEX II': ['MAR/12'] }, verifyTitle: /2016\/522/ },
+  { id: 'DR-2016-522', title: 'Commission Delegated Regulation (EU) 2016/522: third-country public bodies, indicators of market manipulation, disclosure thresholds, notification of delays, managers\' transactions', short: 'Del. Reg. 2016/522', layer: 'implementing', celex: '32016R0522', annexLinks: { 'ANNEX I': ['MAR/6'], 'ANNEX II': ['MAR/12'] }, annexTitles: { 'ANNEX I': 'Third-country public bodies and central banks (Article 6(5) MAR)' }, verifyTitle: /2016\/522/ },
   { id: 'DR-2016-908', title: 'Commission Delegated Regulation (EU) 2016/908: RTS on accepted market practices', short: 'Del. Reg. 2016/908', layer: 'implementing', celex: '32016R0908', supplements: ['MAR/13'], verifyTitle: /accepted market practice/i },
   { id: 'DR-2016-909', title: 'Commission Delegated Regulation (EU) 2016/909: RTS on financial instrument reference data notifications', short: 'Del. Reg. 2016/909', layer: 'implementing', celex: '32016R0909', supplements: ['MAR/4'], verifyTitle: /2016\/909/ },
   { id: 'DR-2016-957', title: 'Commission Delegated Regulation (EU) 2016/957: RTS on arrangements, systems and procedures to detect and report suspicious orders and transactions (STORs)', short: 'Del. Reg. 2016/957', layer: 'implementing', celex: '32016R0957', supplements: ['MAR/16'], verifyTitle: /suspicious/i },

@@ -95,8 +95,8 @@ export function parseAct(html, { doc }) {
         .join('\n');
       if (t.replace(/\s/g, '').length < 40) continue;
       // Untitled annexes: the annex's first line after its number ("STOR template").
-      const first = t.split('\n').map((l) => l.trim()).find((l, i) => i > 0 && l.length > 3 && l.length < 160 && !/^(?:SECTION|Table)\b/i.test(l));
-      units.push({ d: doc, k: 'annex', n: tbl ? `${annex.replace(/\s+/g, ' ')}, ${tbl}` : annex, b: titles[0] || (tbl ? null : first) || null, t });
+      const first = t.split('\n').map((l) => l.trim()).find((l, i) => i > 0 && l.length > 3 && l.length < 320 && !/^(?:SECTION|Table|TEMPLATE\s+\d+$|PART\s+[A-Z0-9]+$)\b/i.test(l) && !/ \| |^\d+\.\s/.test(l));
+      units.push({ d: doc, k: 'annex', n: tbl ? `${annex.replace(/\s+/g, ' ')}, ${tbl}` : annex, b: (tbl ? titles[0] : first || titles[0]) || null, t });
     }
   }
   return { units, amended: [...amended] };

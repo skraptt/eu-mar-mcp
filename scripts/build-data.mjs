@@ -155,6 +155,12 @@ for (const u of units) {
   if (cites.length) u.l = cites.map((c) => c.id);
 }
 
+// Annexes with no usable heading of their own (`annexTitles` in scripts/sources.mjs).
+for (const u of units) {
+  const t = u.k === 'annex' && registry.get(u.d)?.annexTitles?.[u.n];
+  if (t) u.b = t;
+}
+
 // Level 2 acts supplement particular MAR articles (`supplements` in scripts/sources.mjs).
 // Their articles and annexes often say "this Regulation" rather than citing MAR, so units
 // with no MAR link get the act's MAR articles; `annexLinks` sets them per annex.
