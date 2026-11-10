@@ -274,5 +274,19 @@
     "sha256": "a7e7eb1e0d3f9a4e18c6ad355445979557b990add198e14a508acb0c61a75d5d",
     "fetchedAt": "2026-11-10T19:35:56.323Z",
     "celex": "32016R1052"
+  },
+  "MAR-2014": {
+    "id": "MAR-2014",
+    "title": "Regulation (EU) No 596/2014 (MAR), original text of 16 April 2014 – recitals",
+    "short": "MAR (2014 text)",
+    "layer": "regulation",
+    "file": "raw/MAR-2014.html",
+    "url": "http://publications.europa.eu/resource/cellar/329793ac-f1f6-11e3-8cd4-01aa75ed71a1.0006.03/DOC_1",
+    "sourceUrl": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014R0596",
+    "contentType": "application/xhtml+xml;charset=UTF-8",
+    "bytes": 559166,
+    "sha256": "c016ec0efc68fb4a5c457c99bd13d466b9381c267b022e514ea482a3bb58da1b",
+    "fetchedAt": "2026-11-10T19:44:54.942Z",
+    "celex": "32014R0596"
   }
 }

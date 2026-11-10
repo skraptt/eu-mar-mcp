@@ -1,5 +1,6 @@
 · 02014R0596: SPARQL → HTTP 200, 6 consolidated versions
 = MAR                        unchanged
+✓ MAR-2014                      559166 B  http://publications.europa.eu/resource/cellar/329793ac-f1f6-11e3-8cd4-01aa75ed71a1.0006.03/DOC_1
 · 02024R2809: SPARQL → HTTP 200, 0 consolidated versions
 = LISTING-ACT                unchanged
 · 02014L0057: SPARQL → HTTP 200, 0 consolidated versions
@@ -8,26 +9,26 @@
 = DR-2016-522                unchanged
 · 02016R0908: SPARQL → HTTP 200, 1 consolidated versions
 · DR-2016-908: https://publications.europa.eu/resource/celex/02016R0908-20160610 → HTTP 404  214 B 
-· DR-2016-908: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0908-20160610 → HTTP 404 text/html; charset=UTF-8 84085 B 
-✓ DR-2016-908                   116053 B  http://publications.europa.eu/resource/cellar/f146d760-2ec7-11e6-b497-01aa75ed71a1.0006.03/DOC_1
+· DR-2016-908: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0908-20160610 → HTTP 404 text/html; charset=UTF-8 84084 B 
+= DR-2016-908                unchanged
 · 02016R0909: SPARQL → HTTP 200, 1 consolidated versions
 · DR-2016-909: https://publications.europa.eu/resource/celex/02016R0909-20160610 → HTTP 404  214 B 
-· DR-2016-909: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0909-20160610 → HTTP 404 text/html; charset=UTF-8 84082 B 
-✓ DR-2016-909                    76325 B  http://publications.europa.eu/resource/cellar/14057ea6-2ec8-11e6-b497-01aa75ed71a1.0006.03/DOC_1
+· DR-2016-909: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0909-20160610 → HTTP 404 text/html; charset=UTF-8 84084 B 
+= DR-2016-909                unchanged
 · 02016R0957: SPARQL → HTTP 200, 1 consolidated versions
 · DR-2016-957: https://publications.europa.eu/resource/celex/02016R0957-20160617 → HTTP 404  214 B 
 · DR-2016-957: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0957-20160617 → HTTP 404 text/html; charset=UTF-8 84083 B 
-✓ DR-2016-957                   132939 B  http://publications.europa.eu/resource/cellar/70ac5824-345b-11e6-969e-01aa75ed71a1.0006.03/DOC_1
+= DR-2016-957                unchanged
 · 02016R0958: SPARQL → HTTP 200, 1 consolidated versions
 = DR-2016-958                unchanged
 · 02016R0960: SPARQL → HTTP 200, 1 consolidated versions
 · DR-2016-960: https://publications.europa.eu/resource/celex/02016R0960-20160617 → HTTP 404  214 B 
 · DR-2016-960: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0960-20160617 → HTTP 404 text/html; charset=UTF-8 84086 B 
-✓ DR-2016-960                    48597 B  http://publications.europa.eu/resource/cellar/b34a7b86-345b-11e6-969e-01aa75ed71a1.0006.03/DOC_1
+= DR-2016-960                unchanged
 · 02016R1052: SPARQL → HTTP 200, 1 consolidated versions
 · DR-2016-1052: https://publications.europa.eu/resource/celex/02016R1052-20160630 → HTTP 404  214 B 
-· DR-2016-1052: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R1052-20160630 → HTTP 404 text/html; charset=UTF-8 84085 B 
-✓ DR-2016-1052                   72323 B  http://publications.europa.eu/resource/cellar/9a2e27a3-3e84-11e6-af30-01aa75ed71a1.0006.03/DOC_1
+· DR-2016-1052: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R1052-20160630 → HTTP 404 text/html; charset=UTF-8 84084 B 
+= DR-2016-1052               unchanged
 · 02016R0959: SPARQL → HTTP 200, 0 consolidated versions
 = ITS-2016-959               unchanged
 · 02016R1055: SPARQL → HTTP 200, 0 consolidated versions
