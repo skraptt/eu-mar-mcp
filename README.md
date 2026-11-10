@@ -18,10 +18,10 @@ ACER's guidance. The two servers are meant to be connected side by side.
 
 | Layer | Documents |
 |---|---|
-| Regulation / directive | MAR — Regulation (EU) No 596/2014, latest consolidated version; Regulation (EU) 2024/2809 (Listing Act, amending MAR); Directive 2014/57/EU on criminal sanctions for market abuse (CS MAD) |
+| Regulation / directive | MAR — Regulation (EU) No 596/2014, latest consolidated version, with the recitals of the original 2014 text (consolidated texts carry none); Regulation (EU) 2024/2809 (Listing Act, amending MAR); Directive 2014/57/EU on criminal sanctions for market abuse (CS MAD) |
 | Delegated acts (RTS) | 2016/522 (indicators of manipulation, thresholds, delays, managers' transactions); 2016/908 (accepted market practices); 2016/909 (reference data); 2016/957 (STORs); 2016/958 (investment recommendations); 2016/960 (market soundings); 2016/1052 (buy-backs and stabilisation) |
 | Implementing acts (ITS) | 2016/959 (market soundings); 2016/1055 (disclosure and delay of inside information); 2016/523 (managers' transactions); 2022/1210 (insider lists); 2016/378 (reference data); Implementing Directive 2015/2392 (reporting of infringements) |
-| ESMA guidance | Q&As on MAR (ESMA70-145-111); MAR guidelines on delay in the disclosure of inside information, on information relating to commodity derivatives markets, and on persons receiving market soundings |
+| ESMA guidance | Q&As on MAR (ESMA70-145-111); MAR guidelines on delay in the disclosure of inside information as revised in October 2026 (Annex I to the final report ESMA74-268544963-1718; the report's consultation feedback is left out), on information relating to commodity derivatives markets, and on persons receiving market soundings |
 
 Every act is fetched in its latest consolidated version where one exists. Sources are
 fetched from EUR-Lex (Publications Office CELLAR) and esma.europa.eu every day.

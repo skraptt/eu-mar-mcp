@@ -35,3 +35,17 @@ test('the STOR regulation is linked to Article 16 MAR', opts, () => {
   const p = e.getProvision({ provision: 'Article 16 MAR' });
   assert.ok(p.implementing.some((x) => x.id.startsWith('DR-2016-957/')));
 });
+
+test('MAR recitals come from the 2014 text', opts, () => {
+  if (!data.docs.some((d) => d.id === 'MAR-2014')) return;
+  const r = e.getProvision({ provision: 'Recital 23 MAR', related: 0 });
+  assert.equal(r.id, 'MAR-2014/Recital 23');
+  assert.match(r.url, /CELEX:32014R0596#rct_23$/);
+  assert.ok(!data.units.some((u) => u.d === 'MAR-2014' && u.k !== 'recital'), 'only recitals are kept');
+});
+
+test('delay guidelines hold only the guidelines annex', opts, () => {
+  const t = data.units.filter((u) => u.d === 'ESMA-GL-DELAY');
+  assert.ok(t.length > 0 && t.length < 20, `units: ${t.length}`);
+  assert.ok(!t.some((u) => /Cost-benefit|Summary of questions|Feedback/i.test(u.b || '')));
+});

@@ -32,6 +32,8 @@ test('build: articles, Q&As and guidelines', () => {
   assert.ok(!data.units.some((u) => u.d === 'ESMA-QA' && u.n === '5.2'), 'deleted Q&As are dropped');
   const g = data.units.find((u) => u.d === 'ESMA-GL-DELAY' && u.n === '5.1');
   assert.equal(g.pr, 'paras. (7)–(8)');
+  const delay = data.units.filter((u) => u.d === 'ESMA-GL-DELAY').map((u) => u.t).join('\n');
+  assert.ok(!/must not be indexed/.test(delay), 'only the guidelines annex is kept');
 });
 
 test('build: links between layers', () => {
@@ -59,7 +61,7 @@ test('provision references resolve', () => {
   assert.equal(r('Art. 7 of the Market Abuse Regulation').id, 'MAR/7');
   assert.equal(r('Article 16').id, 'MAR/16');
   assert.equal(r('Article 2 2016/957').id, 'DR-2016-957/2');
-  assert.equal(r('Recital 1 MAR').id, 'MAR/Recital 1');
+  assert.equal(r('Recital 1 MAR').id, 'MAR/Recital 1', 'falls back to the act when the 2014 text is not held');
   assert.equal(r('ESMA Q&A 5.1').id, 'ESMA-QA/5.1');
   assert.equal(r('delay guidelines 5.1').id, 'ESMA-GL-DELAY/5.1');
   assert.equal(r('MAR/18').id, 'MAR/18');

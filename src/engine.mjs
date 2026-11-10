@@ -189,9 +189,11 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
       return byId.has(id) ? { id, indices: [byId.get(id)], paragraph: t.match(/\b\d{1,2}[a-z]?\s*\(\s*(\d{1,2}[a-z]?)\s*\)/)?.[1] ?? null } : { missing: id };
     }
     if ((m = t.match(/\brecital\s*(\d{1,3})/i))) {
-      const d = doc && !isGuidanceDoc(doc) ? doc : CORPUS.defaultRecitalDoc;
-      const id = `${d}/Recital ${m[1]}`;
-      return byId.has(id) ? { id, indices: [byId.get(id)] } : { missing: id };
+      const d = doc && !isGuidanceDoc(doc) ? doc : CORPUS.defaultArticleDoc;
+      // Recitals of a consolidated act are read from its original text (MAR → MAR-2014).
+      const ids = [CORPUS.recitalDocOf?.[d], d].filter(Boolean).map((x) => `${x}/Recital ${m[1]}`);
+      const id = ids.find((x) => byId.has(x));
+      return id ? { id, indices: [byId.get(id)] } : { missing: ids[0] };
     }
     if ((m = t.match(/\btable\s*(\d)/i)) && doc && !isGuidanceDoc(doc)) {
       const i = units.findIndex((u) => u.d === doc && u.k === 'annex' && new RegExp(`Table\\s+${m[1]}\\b`).test(u.n));

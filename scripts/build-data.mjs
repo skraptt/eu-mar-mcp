@@ -99,12 +99,23 @@ for (const [id, m] of Object.entries(manifest)) {
 
   if (m.file.endsWith('.html')) {
     const { units: u } = parseAct(readFileSync(join(src, m.file), 'utf8'), { doc: id });
-    for (const x of u) units.push(x);
+    // `kinds` keeps only some unit kinds (the original MAR is held for its recitals).
+    for (const x of u) if (!reg.kinds || reg.kinds.includes(x.k)) units.push(x);
     continue;
   }
 
   const { tables, ...pdfOpts } = reg.pdf || {};
-  const sections = parsePdfLines(pdfLines(id, { tables }), { doc: id, qa: !!reg.qa, numberedParas: !!reg.numberedParas, ...pdfOpts });
+  // `from` / `to`: keep only the lines from the first heading line matching `from` up to
+  // (not including) the first matching `to` (a report whose guidelines are in an annex).
+  let lines = pdfLines(id, { tables });
+  if (reg.from) {
+    // The last match: the first is usually the table of contents.
+    const a = lines.findLastIndex((l) => reg.from.test(l.t));
+    const b = reg.to ? lines.findIndex((l, i) => i > a && reg.to.test(l.t)) : -1;
+    if (a < 0) throw new Error(`${id}: start marker ${reg.from} not found; check scripts/sources.mjs`);
+    lines = lines.slice(a + 1, b > a ? b : undefined);
+  }
+  const sections = parsePdfLines(lines, { doc: id, qa: !!reg.qa, numberedParas: !!reg.numberedParas, ...pdfOpts });
   const seen = new Map();
   for (const s of sections) {
     // Front matter of the long documents is a cover page and a list of related documents.

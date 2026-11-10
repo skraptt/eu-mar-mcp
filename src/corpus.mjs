@@ -6,7 +6,9 @@ export const CORPUS = {
   name: 'MAR',
   // Article and recital citations without a document name ("Article 17") refer to MAR.
   defaultArticleDoc: 'MAR',
-  defaultRecitalDoc: 'MAR',
+  // Consolidated MAR has no recitals; "Recital 23 MAR" is read from the 2014 text.
+  defaultRecitalDoc: 'MAR-2014',
+  recitalDocOf: { MAR: 'MAR-2014' },
   // The Q&A document: its chapter introductions are kept out of ranked results, and its
   // units are labelled "Q 5.1".
   qaDoc: 'ESMA-QA',
@@ -37,8 +39,9 @@ export const CORPUS = {
     ['ESMA-GL-DELAY', /\bdelay(?:ed|ing)?\b.*\b(?:guidelines?|disclosure)\b|\blegitimate\s+interests?\s+guidelines?/i],
     ['ESMA-GL-COMMODITY', /commodit(?:y|ies)\s+(?:derivatives?\s+)?guidelines?|guidelines?\s+on\s+commodit/i],
     ['ESMA-GL-SOUNDINGS', /soundings?\s+guidelines?|guidelines?\s+(?:on|for)\s+(?:persons\s+receiving\s+)?market\s+soundings?/i],
+    ['MAR-2014', /\b(?:mar\s*\(?2014(?:\s+text)?\)?|original\s+(?:text\s+of\s+)?mar)\b/i],
     ['MAR', /\b(?:mar|596\s*\/\s*2014|market\s+abuse\s+regulation)\b/i],
   ],
   // Example citations for error messages.
-  examples: '"Article 17 MAR", "Article 17(4) MAR", "Article 2 2016/957", "ESMA Q&A 5.1", "delay guidelines 5.1"',
+  examples: '"Article 17 MAR", "Article 17(4) MAR", "Recital 23 MAR", "Article 2 2016/957", "ESMA Q&A 5.1", "delay guidelines 5.1"',
 };

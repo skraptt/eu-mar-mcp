@@ -16,7 +16,7 @@ export const TOOLS = [
     name: 'search_mar',
     title: 'Search MAR sources',
     description:
-      'Searches the EU Market Abuse Regulation (MAR, Regulation (EU) No 596/2014, consolidated incl. the Listing Act amendments), Directive 2014/57/EU (CS MAD), ' +
+      'Searches the EU Market Abuse Regulation (MAR, Regulation (EU) No 596/2014, consolidated incl. the Listing Act amendments, with the recitals of the 2014 text), Directive 2014/57/EU (CS MAD), ' +
       'the Commission delegated and implementing acts under MAR (STORs 2016/957, indicators 2016/522, market soundings 2016/960 and 2016/959, accepted market practices 2016/908, ' +
       'buy-backs and stabilisation 2016/1052, investment recommendations 2016/958, disclosure and delay 2016/1055, managers\' transactions 2016/523, insider lists 2022/1210, ' +
       'reference data 2016/909 and 2016/378, whistleblowing 2015/2392) and ESMA publications: the Q&As on MAR and the MAR guidelines on delay of disclosure, commodity derivatives and market soundings. ' +
@@ -41,7 +41,7 @@ export const TOOLS = [
     title: 'Get a provision with its ESMA interpretation',
     description:
       'Returns the full text of a provision. For MAR articles, also the delegated and implementing provisions that refer to it and the ESMA guidelines sections and Q&As that refer to it, most specific first. ' +
-      'Accepts "Article 17 MAR", "Article 17(4) MAR", "Article 7(1)(b) MAR", "Article 2 2016/957", "Article 4 CS MAD", "ESMA Q&A 5.1", "delay guidelines 5.1", ' +
+      'Accepts "Article 17 MAR", "Article 17(4) MAR", "Article 7(1)(b) MAR", "Recital 23 MAR", "Article 2 2016/957", "Article 4 CS MAD", "ESMA Q&A 5.1", "delay guidelines 5.1", ' +
       'or an id from search results ("MAR/17"). For guidance sections, lists the provisions they cite.',
     inputSchema: {
       type: 'object',

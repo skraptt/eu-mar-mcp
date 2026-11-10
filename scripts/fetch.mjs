@@ -102,7 +102,7 @@ async function fetchEurLex(entry) {
   // Every act: the latest consolidated version (CELEX 0yyyyXnnnn-date) if there is one,
   // else the original. Acts only ever corrected (never amended) can have a "consolidated"
   // CELEX number with no English text behind it; the original is used then too.
-  const consolidated = await latestConsolidated(`0${entry.celex.slice(1)}`);
+  const consolidated = entry.original ? null : await latestConsolidated(`0${entry.celex.slice(1)}`);
   for (const celex of [...new Set([consolidated, entry.celex].filter(Boolean))]) {
     const tries = [
       [`https://publications.europa.eu/resource/celex/${celex}`, { Accept: 'application/xhtml+xml, text/html;q=0.9', 'Accept-Language': 'eng' }],
