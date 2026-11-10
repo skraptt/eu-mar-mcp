@@ -73,3 +73,8 @@ test('paragraph citations return the paragraph; Level 2 lists respect `related`'
   const s = e.getProvision({ provision: 'Article 16 MAR', related: 2 });
   assert.equal(s.implementing[0].id, 'DR-2016-957/ANNEX', 'templates first');
 });
+
+test('no paragraph number is left on a line of its own', opts, () => {
+  assert.ok(!data.units.some((u) => u.k === 'article' && /^\d{1,2}[a-z]?\.\s*$/m.test(u.t)));
+  assert.ok(!e.getProvision({ provision: 'Article 17(4a) MAR' }).text.includes('\n5.'));
+});

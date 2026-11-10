@@ -238,7 +238,7 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
     const lines = text.split('\n');
     const start = lines.findIndex((l) => l.startsWith(`${p}. `));
     if (start < 0) return null;
-    const isPara = (l) => /^\d{1,2}[a-z]?\.\s/.test(l);
+    const isPara = (l) => /^\d{1,2}[a-z]?\.(?:\s|$)/.test(l);
     let end = lines.findIndex((l, i) => i > start && isPara(l));
     if (end < 0) end = lines.length;
     return lines.slice(start, end).join('\n').replace(/\n*\[deleted\]\s*$/, '').trim();

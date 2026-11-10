@@ -14,7 +14,7 @@ const clean = (t) =>
     // A run of dashes on its own line marks a deleted provision.
     .replace(/^[ \t]*[—–-]{4,}[ \t]*$/gm, '[deleted]')
     // List labels and paragraph numbers on their own line: "(a)\n\ntext", "1.\ntext"
-    .replace(/^[ \t]*(\((?:[a-z]{1,4}|\d{1,3})\)|\d{1,3}[a-z]?\.|[–—-])[ \t]*\n+(?=\S)/gm, '$1 ')
+    .replace(/^[ \t]*(\((?:[a-z]{1,4}|\d{1,3})\)|\d{1,3}[a-z]?\.|[–—-])[ \t]*\n+[ \t]*(?=\S)/gm, '$1 ')
     .replace(/^\(([a-z]{1,4}|[ivx]+|\d{1,3})\)\t+/gm, '($1) ')
     .replace(/\t+/g, ' ')
     .replace(/ {2,}/g, ' ')
