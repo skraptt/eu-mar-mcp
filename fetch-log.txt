@@ -1,0 +1,48 @@
+· 02014R0596: SPARQL → HTTP 200, 6 consolidated versions
+✓ MAR                           425972 B  http://publications.europa.eu/resource/cellar/b5b43c29-3d97-11f1-814f-01aa75ed71a1.0007.02/DOC_1
+· 02024R2809: SPARQL → HTTP 200, 0 consolidated versions
+✓ LISTING-ACT                   674744 B  http://publications.europa.eu/resource/cellar/43add894-a229-11ef-85f0-01aa75ed71a1.0006.03/DOC_1
+· 02014L0057: SPARQL → HTTP 200, 0 consolidated versions
+✓ CSMAD                          96984 B  http://publications.europa.eu/resource/cellar/a5b6bfbc-f1f7-11e3-8cd4-01aa75ed71a1.0006.03/DOC_1
+· 02016R0522: SPARQL → HTTP 200, 3 consolidated versions
+✓ DR-2016-522                   127372 B  http://publications.europa.eu/resource/cellar/b4ccb842-9073-11f1-9262-01aa75ed71a1.0007.02/DOC_1
+· 02016R0908: SPARQL → HTTP 200, 1 consolidated versions
+· DR-2016-908: https://publications.europa.eu/resource/celex/02016R0908-20160610 → HTTP 404  214 B 
+· DR-2016-908: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0908-20160610 → HTTP 202 text/html; charset=UTF-8 2035 B 
+✗ DR-2016-908: not fetched
+· 02016R0909: SPARQL → HTTP 200, 1 consolidated versions
+· DR-2016-909: https://publications.europa.eu/resource/celex/02016R0909-20160610 → HTTP 404  214 B 
+· DR-2016-909: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0909-20160610 → HTTP 202 text/html; charset=UTF-8 2035 B 
+✗ DR-2016-909: not fetched
+· 02016R0957: SPARQL → HTTP 200, 1 consolidated versions
+· DR-2016-957: https://publications.europa.eu/resource/celex/02016R0957-20160617 → HTTP 404  214 B 
+· DR-2016-957: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0957-20160617 → HTTP 202 text/html; charset=UTF-8 2035 B 
+✗ DR-2016-957: not fetched
+· 02016R0958: SPARQL → HTTP 200, 1 consolidated versions
+✓ DR-2016-958                    47563 B  http://publications.europa.eu/resource/cellar/6caf56bc-35d0-4d56-a078-44def8aa7c3b.0020.02/DOC_1
+· 02016R0960: SPARQL → HTTP 200, 1 consolidated versions
+· DR-2016-960: https://publications.europa.eu/resource/celex/02016R0960-20160617 → HTTP 404  214 B 
+· DR-2016-960: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R0960-20160617 → HTTP 202 text/html; charset=UTF-8 2035 B 
+✗ DR-2016-960: not fetched
+· 02016R1052: SPARQL → HTTP 200, 1 consolidated versions
+· DR-2016-1052: https://publications.europa.eu/resource/celex/02016R1052-20160630 → HTTP 404  214 B 
+· DR-2016-1052: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02016R1052-20160630 → HTTP 202 text/html; charset=UTF-8 2035 B 
+✗ DR-2016-1052: not fetched
+· 02016R0959: SPARQL → HTTP 200, 0 consolidated versions
+✓ ITS-2016-959                   51367 B  http://publications.europa.eu/resource/cellar/839ae1e0-345c-11e6-969e-01aa75ed71a1.0006.03/DOC_1
+· 02016R1055: SPARQL → HTTP 200, 0 consolidated versions
+✓ ITS-2016-1055                  52642 B  http://publications.europa.eu/resource/cellar/488faf39-3e84-11e6-af30-01aa75ed71a1.0006.03/DOC_1
+· 02016R0523: SPARQL → HTTP 200, 0 consolidated versions
+✓ ITS-2016-523                   42399 B  http://publications.europa.eu/resource/cellar/a7f95e34-faf4-11e5-b713-01aa75ed71a1.0006.03/DOC_1
+· 02022R1210: SPARQL → HTTP 200, 0 consolidated versions
+✓ ITS-2022-1210                  61206 B  http://publications.europa.eu/resource/cellar/fc82100f-0337-11ed-acce-01aa75ed71a1.0006.03/DOC_1
+· 02016R0378: SPARQL → HTTP 200, 0 consolidated versions
+✓ ITS-2016-378                   88206 B  http://publications.europa.eu/resource/cellar/fac86372-ec0b-11e5-8a81-01aa75ed71a1.0006.03/DOC_1
+· 02015L2392: SPARQL → HTTP 200, 0 consolidated versions
+✓ DIR-2015-2392                  61545 B  http://publications.europa.eu/resource/cellar/af368cd0-a55c-11e5-b528-01aa75ed71a1.0006.03/DOC_1
+· index https://www.esma.europa.eu/esmas-activities/markets-and-infrastructure/market-abuse → HTTP 404
+✓ ESMA-QA                       542841 B  https://www.esma.europa.eu/sites/default/files/library/esma70-145-111_qa_on_mar.pdf
+✓ ESMA-GL-DELAY                 550896 B  https://www.esma.europa.eu/sites/default/files/2026-10/ESMA74-268544963-1718_Final_report_-_MAR_Guidelines_on_delay_in_the_disclosure_of_inside_information.pdf
+· ESMA-GL-COMMODITY: https://www.esma.europa.eu/sites/default/files/library/2016-1480_mar_guidelines_on_commodities.pdf → HTTP 429 
+✗ ESMA-GL-COMMODITY: not fetched (1 candidate URLs)
+✓ ESMA-GL-SOUNDINGS             285479 B  https://www.esma.europa.eu/sites/default/files/library/2016-1477_mar_guidelines_-_market_soundings.pdf
