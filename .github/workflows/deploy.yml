@@ -83,8 +83,8 @@ jobs:
       - name: Save the vector cache
         if: always()
         run: |
+          [ -f .vectors/vectors.json ] || exit 0
           cd .vectors
-          [ -f vectors.json ] || exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -q -B vectors

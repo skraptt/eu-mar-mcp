@@ -99,25 +99,29 @@ SELECT DISTINCT ?c WHERE { ?w cdm:resource_legal_id_celex ?c . FILTER(STRSTARTS(
 }
 
 async function fetchEurLex(entry) {
-  // Every act: the latest consolidated version (CELEX 0yyyyXnnnn-date) if there is one.
-  const celex = (await latestConsolidated(`0${entry.celex.slice(1)}`)) ?? entry.celex;
-  entry.resolvedCelex = celex;
-  entry.sourceUrl = `https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:${celex}`;
-  const tries = [
-    [`https://publications.europa.eu/resource/celex/${celex}`, { Accept: 'application/xhtml+xml, text/html;q=0.9', 'Accept-Language': 'eng' }],
-    [`https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:${celex}`, { Accept: 'text/html' }],
-  ];
-  for (const [url, headers] of tries) {
-    const res = await get(url, headers);
-    if (res.ok && looksLikeAct(res.buf)) {
-      const head = res.buf.toString('utf8', 0, 20000);
-      if (entry.verifyTitle && !entry.verifyTitle.test(head)) {
-        log.push(`! ${entry.id}: ${url} does not look like the expected act (title check failed)`);
-        continue;
+  // Every act: the latest consolidated version (CELEX 0yyyyXnnnn-date) if there is one,
+  // else the original. Acts only ever corrected (never amended) can have a "consolidated"
+  // CELEX number with no English text behind it; the original is used then too.
+  const consolidated = await latestConsolidated(`0${entry.celex.slice(1)}`);
+  for (const celex of [...new Set([consolidated, entry.celex].filter(Boolean))]) {
+    const tries = [
+      [`https://publications.europa.eu/resource/celex/${celex}`, { Accept: 'application/xhtml+xml, text/html;q=0.9', 'Accept-Language': 'eng' }],
+      [`https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:${celex}`, { Accept: 'text/html' }],
+    ];
+    for (const [url, headers] of tries) {
+      const res = await get(url, headers);
+      if (res.ok && looksLikeAct(res.buf)) {
+        const head = res.buf.toString('utf8', 0, 20000);
+        if (entry.verifyTitle && !entry.verifyTitle.test(head)) {
+          log.push(`! ${entry.id}: ${url} does not look like the expected act (title check failed)`);
+          continue;
+        }
+        entry.resolvedCelex = celex;
+        entry.sourceUrl = `https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:${celex}`;
+        return save(entry, res, 'html');
       }
-      return save(entry, res, 'html');
+      log.push(`· ${entry.id}: ${url} → HTTP ${res.status} ${res.type} ${res.buf.length} B ${res.error ?? ''}`);
     }
-    log.push(`· ${entry.id}: ${url} → HTTP ${res.status} ${res.type} ${res.buf.length} B ${res.error ?? ''}`);
   }
   log.push(`✗ ${entry.id}: not fetched`);
 }
@@ -166,4 +170,8 @@ writeFileSync(join(out, 'fetch-log.txt'), log.join('\n') + '\n');
 writeFileSync(join(out, 'checked.txt'), `${new Date().toISOString()}\n`);
 console.log(log.join('\n'));
 const missing = [...EURLEX, ...ESMA].filter(want).filter((e) => !manifest[e.id]);
-if (missing.length) console.log(`\n${missing.length} source(s) missing: ${missing.map((e) => e.id).join(', ')}`);
+if (missing.length) {
+  console.log(`\n${missing.length} source(s) missing: ${missing.map((e) => e.id).join(', ')}`);
+  // Shown as a warning on the workflow run; the data is built from what was fetched.
+  if (process.env.GITHUB_ACTIONS) console.log(`::warning title=Sources missing::${missing.map((e) => e.id).join(', ')} not fetched; see fetch-log.txt`);
+}

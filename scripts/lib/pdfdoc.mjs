@@ -31,7 +31,14 @@ const ANNEX_SUB = /^([IVXL]+\.[IVXL]+)\.?\s+(\S.*)$/;
 const PLAIN_NUMBERED = /^(\d{1,2}(?:\.\d{1,3}){1,4})\.?\s+([A-Z][^.]{2,110})$/;
 // ESMA Q&A questions: "Q5.1", "Question 5.1", "Question 5.1 [Last update: …]".
 const QUESTION = /^Q(?:uestion)?\s*(\d{1,2}\.\d{1,3})\b\s*[:.\-–]?\s*(.*)$/i;
-const ANSWER = /^Answer\s*(?:\d{1,2}\.\d{1,3})?\s*:?\s*/i;
+// Answers start "Answer 5.1:", "Answer:" or, in the current ESMA Q&A, "A5.1".
+const ANSWER_AT = /(?:^|\n|\s)(?:Answer\s*(?:\d{1,2}\.\d{1,3})?\s*:|A\d{1,2}\.\d{1,3}\b)/i;
+const ANSWER = /^(?:Answer\s*(?:\d{1,2}\.\d{1,3})?\s*:?|A\d{1,2}\.\d{1,3}\b)\s*/i;
+// The ESMA Q&A heads each question with a topic and its update date ("Blanket
+// cancellation of orders policy" / "Updated: 30 May 2017"), sometimes with a note that
+// the Commission provided the answer. They come before the "Q" line and so end up as the
+// last paragraph of the previous section.
+const TOPIC_TAIL = /(?:^|\n)([^\n]{3,600}?)\s*Updated:\s*(\d{1,2}\s+\w+\s+\d{4})\s*$/;
 const FIELD = /^Data\s+Field\s+(?:No\.?\s*)?\((\d{1,3}[a-z]?(?:\/[a-z])?)\)\s*(.*)$/i;
 
 //   qa              each "Q5.1" / "Question 5.1" line starts a section numbered "5.1"; its
@@ -222,16 +229,31 @@ export function parsePdfLines(lines, { doc, skipPages = 0, annexes = false, numb
     s.text = paras.join('\n').replace(/\s+\n/g, '\n').trim();
     delete s.lines;
     if (s.qa) {
-      // The question runs until "Answer …"; it becomes the title (keeping the "[Last
-      // update …]" note) and the answer the text.
-      const i = s.text.search(/(?:^|\n|\s)Answer\s*(?:\d{1,2}\.\d{1,3})?\s*:/i);
+      // The question runs until the answer marker; it becomes the title and the answer
+      // the text. The first line of the question is in s.title already.
+      const i = s.text.search(ANSWER_AT);
       if (i >= 0) {
-        const question = s.text.slice(0, i).replace(/\s+/g, ' ').trim();
+        const rest = s.text.slice(0, i).replace(/\s+/g, ' ').trim();
+        const head = s.title.replace(/^\[[^\]]*\]\s*/, '');
+        const note = s.title.match(/^\[[^\]]*\]/)?.[0];
         // "[Last update: …]" goes after the question: "Can an issuer … ? [Last update: …]".
-        s.title = question ? `${question} ${s.title}`.trim() : s.title;
+        s.title = [head, rest, note].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
         s.text = s.text.slice(i).trim().replace(ANSWER, '');
       }
       delete s.qa;
+    }
+  }
+  if (qa) {
+    for (let i = 0; i + 1 < sections.length; i++) {
+      const next = sections[i + 1];
+      const m = /^\d{1,2}\.\d{1,3}$/.test(next.num ?? '') && sections[i].text?.match(TOPIC_TAIL);
+      if (!m) continue;
+      sections[i].text = sections[i].text.slice(0, m.index).trim();
+      const by = m[1].match(/^(.*?)\s*\(?Answer provided by (?:the )?European Commission.*$/i);
+      const topic = (by ? by[1] : m[1]).trim();
+      next.topic = topic;
+      next.updated = m[2];
+      next.title = `${topic ? `${topic}: ` : ''}${next.title} [Updated: ${m[2]}${by ? '; answer provided by the European Commission' : ''}]`;
     }
   }
   return sections.filter((s) => s.text || s.title);

@@ -41,7 +41,7 @@ export const TOOLS = [
     title: 'Get a provision with its ESMA interpretation',
     description:
       'Returns the full text of a provision. For MAR articles, also the delegated and implementing provisions that refer to it and the ESMA guidelines sections and Q&As that refer to it, most specific first. ' +
-      'Accepts "Article 17 MAR", "Article 17(4) MAR", "Article 7(1)(b) MAR", "Recital 23 MAR", "Article 2 2016/957", "Article 4 CS MAD", "ESMA Q&A 5.1", "delay guidelines 5.1", ' +
+      'Accepts "Article 17 MAR", "Article 17(4) MAR", "Article 7(1)(b) MAR", "Article 2 2016/957", "Article 4 CS MAD", "ESMA Q&A 5.1", "delay guidelines 5.1", ' +
       'or an id from search results ("MAR/17"). For guidance sections, lists the provisions they cite.',
     inputSchema: {
       type: 'object',

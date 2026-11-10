@@ -40,5 +40,5 @@ export const CORPUS = {
     ['MAR', /\b(?:mar|596\s*\/\s*2014|market\s+abuse\s+regulation)\b/i],
   ],
   // Example citations for error messages.
-  examples: '"Article 17 MAR", "Article 17(4) MAR", "Article 2 2016/957", "Recital 23 MAR", "ESMA Q&A 5.1", "delay guidelines 5.1"',
+  examples: '"Article 17 MAR", "Article 17(4) MAR", "Article 2 2016/957", "ESMA Q&A 5.1", "delay guidelines 5.1"',
 };

@@ -144,6 +144,21 @@ for (const u of units) {
   if (cites.length) u.l = cites.map((c) => c.id);
 }
 
+// Drop links to provisions that no longer exist in a document we hold (deleted articles,
+// such as Article 28 MAR, still cited by older acts and guidance). Links to documents not
+// held are kept out of the index anyway by the engine.
+const unitIds = new Set(units.map((u) => `${u.d}/${u.n.replace(/~\d+$/, '')}`));
+const held = new Set(docs.map((d) => d.id));
+let dropped = 0;
+for (const u of units) {
+  if (!u.l) continue;
+  const keep = u.l.filter((l) => !held.has(l.split('/')[0]) || unitIds.has(l));
+  dropped += u.l.length - keep.length;
+  if (keep.length) u.l = keep;
+  else delete u.l;
+}
+if (dropped) console.log(`  ${dropped} link(s) to provisions not in the text (deleted articles) dropped`);
+
 // snapshot: when a source last changed. checked: when the sources were last checked for
 // changes (the fetch run before this build; falls back to the snapshot).
 const snapshot = docs.map((d) => d.fetchedAt).sort().pop();

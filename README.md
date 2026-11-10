@@ -36,7 +36,7 @@ fetched from EUR-Lex (Publications Office CELLAR) and esma.europa.eu every day.
 | `list_documents` | Documents, fetch dates and links. |
 
 Citations it understands: `Article 17 MAR`, `Article 17(4) MAR`, `Art. 7 of the Market
-Abuse Regulation`, `Recital 23 MAR`, `Article 2 2016/957`, `Article 4 CS MAD`,
+Abuse Regulation`, `Article 2 2016/957`, `Article 4 CS MAD`,
 `ESMA Q&A 5.1`, `delay guidelines 5.1`.
 
 ## How it works

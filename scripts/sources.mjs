@@ -53,13 +53,17 @@ export const ESMA = [
     url: 'https://www.esma.europa.eu/sites/default/files/library/esma70-145-111_qa_on_mar.pdf',
   },
   {
+    // The guidelines revised after the Listing Act amended Article 17(4) MAR. ESMA
+    // published them in October 2026 in its final report (the guidelines are in an annex);
+    // the 2016 guidelines (ESMA/2016/1478) are being replaced. Check for the separate
+    // guidelines document once ESMA publishes it in all languages.
     id: 'ESMA-GL-DELAY',
-    title: 'ESMA MAR Guidelines – Delay in the disclosure of inside information',
-    short: 'ESMA delay guidelines',
+    title: 'ESMA Final Report – MAR Guidelines on delay in the disclosure of inside information (ESMA74-268544963-1718, October 2026; guidelines in the annex)',
+    short: 'ESMA delay guidelines (2026 final report)',
     layer: 'guidance',
     numberedParas: true,
-    match: /delay|legitimate[_-]interests/i,
-    url: 'https://www.esma.europa.eu/sites/default/files/library/2016-1478_mar_guidelines_-_legitimate_interests.pdf',
+    match: /MAR_Guidelines_on_delay_in_the_disclosure/i,
+    url: 'https://www.esma.europa.eu/sites/default/files/2026-10/ESMA74-268544963-1718_Final_report_-_MAR_Guidelines_on_delay_in_the_disclosure_of_inside_information.pdf',
   },
   {
     id: 'ESMA-GL-COMMODITY',
@@ -76,7 +80,7 @@ export const ESMA = [
     short: 'ESMA market soundings guidelines',
     layer: 'guidance',
     numberedParas: true,
-    match: /sounding/i,
+    match: /mar_guidelines_-_market_soundings/i,
     url: 'https://www.esma.europa.eu/sites/default/files/library/2016-1477_mar_guidelines_-_market_soundings.pdf',
   },
 ];
