@@ -7,9 +7,12 @@ import { htmlToText } from './html.mjs';
 
 const clean = (t) =>
   t
-    .replace(/[►▼]\s*[MBAC]\d+\s*/g, '') // consolidated-text amendment markers
+    // Consolidated-text amendment markers: "▼B" (basic act), "▼M5", "►C1", "◄".
+    .replace(/[►▼]\s*(?:[MBAC]\d*)?[ \t]*/g, '')
     .replace(/[ \t]*◄[ \t]*/g, ' ')
     .replace(/[\u00a0\u2002\u2003\u2009]/g, ' ')
+    // A run of dashes on its own line marks a deleted provision.
+    .replace(/^[ \t]*[—–-]{4,}[ \t]*$/gm, '[deleted]')
     // List labels and paragraph numbers on their own line: "(a)\n\ntext", "1.\ntext"
     .replace(/^[ \t]*(\((?:[a-z]{1,4}|\d{1,3})\)|\d{1,3}[a-z]?\.|[–—-])[ \t]*\n+(?=\S)/gm, '$1 ')
     .replace(/^\(([a-z]{1,4}|[ivx]+|\d{1,3})\)\t+/gm, '($1) ')
@@ -91,7 +94,9 @@ export function parseAct(html, { doc }) {
         .filter(Boolean)
         .join('\n');
       if (t.replace(/\s/g, '').length < 40) continue;
-      units.push({ d: doc, k: 'annex', n: tbl ? `${annex.replace(/\s+/g, ' ')}, ${tbl}` : annex, b: titles[0] || null, t, ...(id ? {} : {}) });
+      // Untitled annexes: the annex's first line after its number ("STOR template").
+      const first = t.split('\n').map((l) => l.trim()).find((l, i) => i > 0 && l.length > 3 && l.length < 160 && !/^(?:SECTION|Table)\b/i.test(l));
+      units.push({ d: doc, k: 'annex', n: tbl ? `${annex.replace(/\s+/g, ' ')}, ${tbl}` : annex, b: titles[0] || (tbl ? null : first) || null, t });
     }
   }
   return { units, amended: [...amended] };

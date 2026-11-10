@@ -155,6 +155,18 @@ for (const u of units) {
   if (cites.length) u.l = cites.map((c) => c.id);
 }
 
+// Level 2 acts supplement particular MAR articles (`supplements` in scripts/sources.mjs).
+// Their articles and annexes often say "this Regulation" rather than citing MAR, so units
+// with no MAR link get the act's MAR articles; `annexLinks` sets them per annex.
+for (const u of units) {
+  const reg = registry.get(u.d);
+  if (!reg || reg.layer !== 'implementing') continue;
+  const byAnnex = u.k === 'annex' ? reg.annexLinks?.[u.n.replace(/,.*$/, '')] : null;
+  const add = byAnnex ?? (u.k === 'recital' ? null : reg.supplements);
+  if (!add || (u.l || []).some((l) => l.startsWith('MAR/'))) continue;
+  u.l = [...new Set([...(u.l || []), ...add])];
+}
+
 // Drop links to provisions that no longer exist in a document we hold (deleted articles,
 // such as Article 28 MAR, still cited by older acts and guidance). Links to documents not
 // held are kept out of the index anyway by the engine.

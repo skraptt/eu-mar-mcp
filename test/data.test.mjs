@@ -49,3 +49,14 @@ test('delay guidelines hold only the guidelines annex', opts, () => {
   assert.ok(t.length > 0 && t.length < 20, `units: ${t.length}`);
   assert.ok(!t.some((u) => /Cost-benefit|Summary of questions|Feedback/i.test(u.b || '')));
 });
+
+test('consolidated texts carry no amendment markers', opts, () => {
+  assert.ok(!data.units.some((u) => /[▼►◄]|[—–-]{4,}/.test(u.t)), 'markers or dash runs left');
+});
+
+test('Level 2 acts and their annexes are linked to the MAR article they supplement', opts, () => {
+  const p = e.getProvision({ provision: 'Article 16 MAR' });
+  assert.ok(p.implementing.some((x) => x.id === 'DR-2016-957/ANNEX'), 'STOR template');
+  assert.equal(data.units.find((u) => u.d === 'DR-2016-957' && u.k === 'annex').b, 'STOR template');
+  assert.ok(e.getProvision({ provision: 'Article 12 MAR' }).implementing.some((x) => x.id === 'DR-2016-522/ANNEX II'));
+});

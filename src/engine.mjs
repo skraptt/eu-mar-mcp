@@ -284,8 +284,8 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
       // Level 2 articles that refer to this article (delegated and implementing acts that
       // supplement it), in document order.
       out.implementing = [...new Set(citedBy.get(key) || [])]
-        .filter((i) => units[i].k === 'article' && docById.get(units[i].d)?.layer === 'implementing')
-        .slice(0, Math.max(related, 6))
+        .filter((i) => (units[i].k === 'article' || units[i].k === 'annex') && docById.get(units[i].d)?.layer === 'implementing')
+        .slice(0, Math.max(related, 12))
         .map((i) => brief(i));
     } else if (first.l?.length) {
       out.citesProvisions = [...new Set(r.indices.flatMap((i) => units[i].l || []))].filter((id) => byId.has(id)).map((id) => ({ id, citation: label(units[byId.get(id)]), title: units[byId.get(id)].b }));
