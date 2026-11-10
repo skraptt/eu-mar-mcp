@@ -60,3 +60,8 @@ test('Level 2 acts and their annexes are linked to the MAR article they suppleme
   assert.equal(data.units.find((u) => u.d === 'DR-2016-957' && u.k === 'annex').b, 'STOR template');
   assert.ok(e.getProvision({ provision: 'Article 12 MAR' }).implementing.some((x) => x.id === 'DR-2016-522/ANNEX II'));
 });
+
+test('a deleted article says so', opts, () => {
+  const r = e.getProvision({ provision: 'Article 28 MAR' });
+  assert.match(r.error, /^Article 28 MAR has been deleted/);
+});

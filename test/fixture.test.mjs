@@ -65,7 +65,8 @@ test('provision references resolve', () => {
   assert.equal(r('ESMA Q&A 5.1').id, 'ESMA-QA/5.1');
   assert.equal(r('delay guidelines 5.1').id, 'ESMA-GL-DELAY/5.1');
   assert.equal(r('MAR/18').id, 'MAR/18');
-  assert.ok(r('Article 99 MAR').error);
+  assert.match(r('Article 99 MAR').error, /^Article 99 MAR was not found/);
+  assert.match(r('Article 8 MAR').error, /^Article 8 MAR has been deleted/, 'gap in a consolidated act');
   assert.ok(r('nonsense').error);
 });
 

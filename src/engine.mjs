@@ -235,7 +235,17 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
   function getProvision({ provision, related = 6 } = {}) {
     const r = resolveProvision(provision ?? '');
     if (!r) return { error: `Could not recognise "${provision}". Examples: ${CORPUS.examples}.` };
-    if (r.missing) return { error: `${r.missing} was not found. Use search_mar to find the right provision.` };
+    if (r.missing) {
+      // "MAR/28" → "Article 28 MAR"; a deleted article says so.
+      const [docId, num] = r.missing.split('/');
+      const d = docById.get(docId);
+      const art = d && /^\d+[a-z]?$/.test(num ?? '') ? `Article ${num} ${d.short}` : null;
+      if (art && d.deleted?.includes(num)) {
+        return { error: `${art} has been deleted: it is not in the consolidated text (${d.celex}, ${d.url}). Use search_mar to find the provisions now covering its subject.`, deleted: true };
+      }
+      const label = art ?? (d && num ? `${num} in ${d.short}` : r.missing);
+      return { error: `${label} was not found. Use search_mar to find the right provision.` };
+    }
     const first = units[r.indices[0]];
     const d = docById.get(first.d);
     const text = r.indices.map((i) => units[i].t).join('\n');

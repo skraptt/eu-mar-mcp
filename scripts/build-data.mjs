@@ -173,6 +173,17 @@ for (const u of units) {
   u.l = [...new Set([...(u.l || []), ...add])];
 }
 
+// Deleted articles: numbers missing from a consolidated act's sequence (Article 28 MAR).
+// Recorded so that asking for one says it was deleted rather than "not found".
+for (const doc of docs) {
+  if (!/^0/.test(doc.celex ?? '')) continue;
+  const nums = new Set(units.filter((u) => u.d === doc.id && u.k === 'article').map((u) => u.n));
+  const max = Math.max(0, ...[...nums].map((n) => parseInt(n, 10)).filter(Number.isFinite));
+  const gone = [];
+  for (let n = 1; n <= max; n++) if (!nums.has(String(n))) gone.push(String(n));
+  if (gone.length) doc.deleted = gone;
+}
+
 // Drop links to provisions that no longer exist in a document we hold (deleted articles,
 // such as Article 28 MAR, still cited by older acts and guidance). Links to documents not
 // held are kept out of the index anyway by the engine.
