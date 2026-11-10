@@ -191,5 +191,18 @@
     "bytes": 285479,
     "sha256": "34801cbc3c2cd89b6a174c03e1124945ab7df7f080d7c3fc6315fb403995f4d3",
     "fetchedAt": "2026-11-10T18:38:41.563Z"
+  },
+  "ESMA-GL-COMMODITY": {
+    "id": "ESMA-GL-COMMODITY",
+    "title": "ESMA MAR Guidelines – Information relating to commodity derivatives markets or related spot markets",
+    "short": "ESMA commodity guidelines",
+    "layer": "guidance",
+    "file": "raw/ESMA-GL-COMMODITY.pdf",
+    "url": "https://www.esma.europa.eu/sites/default/files/library/esma-2016-1480_mar_guidelines_on_commodity_derivatives.pdf",
+    "sourceUrl": "https://www.esma.europa.eu/sites/default/files/library/esma-2016-1480_mar_guidelines_on_commodity_derivatives.pdf",
+    "contentType": "application/pdf",
+    "bytes": 219431,
+    "sha256": "b0cd779b7ef0d37046f5c5ed0a546af5896680ba5355173894f2241dd969c1b1",
+    "fetchedAt": "2026-11-10T19:20:43.994Z"
   }
 }
