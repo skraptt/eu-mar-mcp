@@ -119,7 +119,7 @@ for (const [id, m] of Object.entries(manifest)) {
   const seen = new Map();
   for (const s of sections) {
     // Front matter of the long documents is a cover page and a list of related documents.
-    if (s.num === '0' && !reg.keepFrontMatter && sections.length > 12) continue;
+    if (s.num === '0' && !reg.keepFrontMatter && (sections.length > 12 || s.text.length < 400)) continue;
     if (!s.text) continue;
     // Lists of abbreviations only add noise to search.
     if (/^(?:annex\s*\d*\s*:?\s*)?(?:list of )?abbreviations$/i.test(s.title.trim())) continue;

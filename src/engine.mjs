@@ -17,7 +17,7 @@ const DOC_ALIASES = CORPUS.docAliases;
 // docWeight: optional { docId: weight } overriding the documents' own `weight` (default 1).
 // A weight below 1 lowers a document's results in ranking (both BM25 and semantic).
 // fullWeightWhen: when the query matches it, unit weights are ignored (null: never).
-export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = null, fullWeightWhen = null } = {}) {
+export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = null, fullWeightWhen = CORPUS.fullWeightWhen ?? null } = {}) {
   const { docs, units } = data;
   const docById = new Map(docs.map((d) => [d.id, d]));
   const idOf = (u) => `${u.d}/${u.n}`;
@@ -42,7 +42,8 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
   });
 
   // Per-unit ranking weight: the unit's own `w` (set at build time), else the document's.
-  const unitWeight = units.map((u) => unitWeightFn?.(u) ?? u.w ?? docWeight[u.d] ?? docs.find((d) => d.id === u.d)?.weight ?? 1);
+  // Kind weights (CORPUS.kindWeight) lower recitals below the operative provisions.
+  const unitWeight = units.map((u) => (unitWeightFn?.(u) ?? u.w ?? docWeight[u.d] ?? docs.find((d) => d.id === u.d)?.weight ?? 1) * (CORPUS.kindWeight?.[u.k] ?? 1));
   // Q&A chapter introductions (units not numbered like a question, e.g. "5") are navigation.
   const isNav = units.map((u) => u.d === CORPUS.qaDoc && !/^\d+\.\d+/.test(u.n));
   const isGuidanceDoc = (id) => docById.get(id)?.layer === 'guidance';

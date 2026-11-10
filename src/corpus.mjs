@@ -9,6 +9,10 @@ export const CORPUS = {
   // Consolidated MAR has no recitals; "Recital 23 MAR" is read from the 2014 text.
   defaultRecitalDoc: 'MAR-2014',
   recitalDocOf: { MAR: 'MAR-2014' },
+  // Ranking: in natural-language questions, recitals tended to outrank the articles that
+  // answer them. A query that names a recital ranks without these weights.
+  kindWeight: { recital: 0.55 },
+  fullWeightWhen: /\brecitals?\b/i,
   // The Q&A document: its chapter introductions are kept out of ranked results, and its
   // units are labelled "Q 5.1".
   qaDoc: 'ESMA-QA',

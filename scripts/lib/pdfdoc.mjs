@@ -31,9 +31,10 @@ const ANNEX_SUB = /^([IVXL]+\.[IVXL]+)\.?\s+(\S.*)$/;
 const PLAIN_NUMBERED = /^(\d{1,2}(?:\.\d{1,3}){1,4})\.?\s+([A-Z][^.]{2,110})$/;
 // ESMA Q&A questions: "Q5.1", "Question 5.1", "Question 5.1 [Last update: …]".
 const QUESTION = /^Q(?:uestion)?\s*(\d{1,2}\.\d{1,3})\b\s*[:.\-–]?\s*(.*)$/i;
-// Answers start "Answer 5.1:", "Answer:" or, in the current ESMA Q&A, "A5.1".
-const ANSWER_AT = /(?:^|\n|\s)(?:Answer\s*(?:\d{1,2}\.\d{1,3})?\s*:|A\d{1,2}\.\d{1,3}\b)/i;
-const ANSWER = /^(?:Answer\s*(?:\d{1,2}\.\d{1,3})?\s*:?|A\d{1,2}\.\d{1,3}\b)\s*/i;
+// Answers start "Answer 5.1:", "Answer:" or, in the current ESMA Q&A, "A5.1" (sometimes
+// with no space before the answer: "A7.10No.").
+const ANSWER_AT = /(?:^|\n|\s)(?:Answer\s*(?:\d{1,2}\.\d{1,3})?\s*:|A\d{1,2}\.\d{1,3}(?![\d.]))/i;
+const ANSWER = /^(?:Answer\s*(?:\d{1,2}\.\d{1,3})?\s*:?|A\d{1,2}\.\d{1,3}(?![\d.]))\s*/i;
 // The ESMA Q&A heads each question with a topic and its update date ("Blanket
 // cancellation of orders policy" / "Updated: 30 May 2017"), sometimes with a note that
 // the Commission provided the answer. They come before the "Q" line and so end up as the
@@ -248,7 +249,18 @@ export function parsePdfLines(lines, { doc, skipPages = 0, annexes = false, numb
       const next = sections[i + 1];
       const m = /^\d{1,2}\.\d{1,3}$/.test(next.num ?? '') && sections[i].text?.match(TOPIC_TAIL);
       if (!m) continue;
-      sections[i].text = sections[i].text.slice(0, m.index).trim();
+      // The topic line is often joined to the last paragraph of the previous answer
+      // ("… of the delay. Disclosure of inside information by …"): the topic is what follows
+      // the last full stop, and what precedes it stays with the answer.
+      let tail = m[1];
+      let keep = sections[i].text.slice(0, m.index);
+      const stop = [...tail.matchAll(/[.?!”"]\s+(?=[A-Z‘“(])/g)].pop();
+      if (stop) {
+        keep += (keep ? '\n' : '') + tail.slice(0, stop.index + 1);
+        tail = tail.slice(stop.index + stop[0].length);
+      }
+      m[1] = tail;
+      sections[i].text = keep.trim();
       const by = m[1].match(/^(.*?)\s*\(?Answer provided by (?:the )?European Commission.*$/i);
       const topic = (by ? by[1] : m[1]).trim();
       next.topic = topic;
