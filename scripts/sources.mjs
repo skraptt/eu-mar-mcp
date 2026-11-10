@@ -39,7 +39,6 @@ export const EURLEX = [
 
 export const ESMA_INDEX_PAGES = [
   'https://www.esma.europa.eu/policy-activities/market-abuse',
-  'https://www.esma.europa.eu/esmas-activities/markets-and-infrastructure/market-abuse',
 ];
 
 export const ESMA = [
@@ -68,8 +67,8 @@ export const ESMA = [
     short: 'ESMA commodity guidelines',
     layer: 'guidance',
     numberedParas: true,
-    match: /commodit/i,
-    url: 'https://www.esma.europa.eu/sites/default/files/library/2016-1480_mar_guidelines_on_commodities.pdf',
+    match: /1480_mar_guidelines_on_commodit/i,
+    url: 'https://www.esma.europa.eu/sites/default/files/library/esma-2016-1480_mar_guidelines_on_commodity_derivatives.pdf',
   },
   {
     id: 'ESMA-GL-SOUNDINGS',
