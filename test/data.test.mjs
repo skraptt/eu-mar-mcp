@@ -65,3 +65,11 @@ test('a deleted article says so', opts, () => {
   const r = e.getProvision({ provision: 'Article 28 MAR' });
   assert.match(r.error, /^Article 28 MAR has been deleted/);
 });
+
+test('paragraph citations return the paragraph; Level 2 lists respect `related`', opts, () => {
+  const p = e.getProvision({ provision: 'Article 17(4a) MAR', related: 3 });
+  assert.ok(p.paragraphOnly && p.text.startsWith('4a. ') && p.text.length < 2000);
+  assert.ok(p.implementing.length <= 3 && !p.implementing.some((x) => /Entry into force|Repeal/i.test(x.title || '')));
+  const s = e.getProvision({ provision: 'Article 16 MAR', related: 2 });
+  assert.equal(s.implementing[0].id, 'DR-2016-957/ANNEX', 'templates first');
+});

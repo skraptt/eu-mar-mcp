@@ -232,7 +232,19 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
   }
 
   // ---- Provision with its interpretation ----
-  function getProvision({ provision, related = 6 } = {}) {
+  // The text of one numbered paragraph of an article ("4a" → from "4a. …" up to the next
+  // top-level paragraph number), or null when the article is not numbered that way.
+  function paragraphOf(text, p) {
+    const lines = text.split('\n');
+    const start = lines.findIndex((l) => l.startsWith(`${p}. `));
+    if (start < 0) return null;
+    const isPara = (l) => /^\d{1,2}[a-z]?\.\s/.test(l);
+    let end = lines.findIndex((l, i) => i > start && isPara(l));
+    if (end < 0) end = lines.length;
+    return lines.slice(start, end).join('\n').replace(/\n*\[deleted\]\s*$/, '').trim();
+  }
+
+  function getProvision({ provision, related = 6, full = false } = {}) {
     const r = resolveProvision(provision ?? '');
     if (!r) return { error: `Could not recognise "${provision}". Examples: ${CORPUS.examples}.` };
     if (r.missing) {
@@ -248,7 +260,10 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
     }
     const first = units[r.indices[0]];
     const d = docById.get(first.d);
-    const text = r.indices.map((i) => units[i].t).join('\n');
+    const whole = r.indices.map((i) => units[i].t).join('\n');
+    // "Article 17(4a) MAR": only that paragraph, unless the whole article is asked for.
+    const para = r.paragraph && !full && first.k === 'article' ? paragraphOf(whole, r.paragraph) : null;
+    const text = para ?? whole;
     const notes = r.indices.flatMap((i) => units[i].fn || []);
     const out = {
       id: baseId(first),
@@ -259,6 +274,8 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
       text,
       ...(notes.length ? { footnotes: notes } : {}),
       ...(r.paragraph ? { paragraphRequested: r.paragraph } : {}),
+      ...(para ? { paragraphOnly: true, fullLength: whole.length } : {}),
+      ...(r.paragraph && !para && !full && first.k === 'article' ? { paragraphNotFound: true } : {}),
       url: urlOf(first),
       source: { url: d.url, fetchedAt: d.fetchedAt, checkedAt: data.checked ?? data.snapshot },
     };
@@ -273,7 +290,9 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
         const u = units[i];
         const inTitle = new RegExp(`Article\\s+${num}\\b`, 'i').test(u.b || '') ? 4 : 0;
         const mentions = (u.t.match(new RegExp(`Article\\s+${num}\\b`, 'gi')) || []).length;
-        return inTitle + Math.min(mentions, 6) * 0.5 - (u.l?.length || 0) * 0.08;
+        // Asked for a paragraph: guidance on that paragraph first.
+        const onPara = r.paragraph && new RegExp(`Article\\s+${num}\\s*\\(\\s*${r.paragraph}\\s*\\)`, 'i').test(`${u.b || ''} ${u.t}`) ? 3 : 0;
+        return inTitle + onPara + Math.min(mentions, 6) * 0.5 - (u.l?.length || 0) * 0.08;
       };
       const ranked = [...new Set(cands)].sort((a, b) => score(b) - score(a));
       const seen = new Set();
@@ -291,12 +310,19 @@ export function createEngine(data, { docWeight = {}, unitWeight: unitWeightFn = 
       out.guidance = pick((u) => u.d !== CORPUS.qaDoc);
       out.qas = pick((u) => u.d === CORPUS.qaDoc);
       out.relatedCount = new Set(ranked.map((i) => baseId(units[i]))).size;
-      // Level 2 articles that refer to this article (delegated and implementing acts that
-      // supplement it), in document order.
-      out.implementing = [...new Set(citedBy.get(key) || [])]
-        .filter((i) => (units[i].k === 'article' || units[i].k === 'annex') && docById.get(units[i].d)?.layer === 'implementing')
-        .slice(0, Math.max(related, 12))
-        .map((i) => brief(i));
+      // Level 2 articles and annexes that refer to this article (delegated and implementing
+      // acts that supplement it). Final provisions (entry into force, repeal) are left out;
+      // annexes (templates) come first, then articles citing the requested paragraph, then
+      // the rest in document order, up to `related`.
+      const FINAL = /^(?:entry into force|repeal|final provisions?|transitional provisions?)\b/i;
+      const l2 = [...new Set(citedBy.get(key) || [])].filter(
+        (i) => (units[i].k === 'article' || units[i].k === 'annex') && docById.get(units[i].d)?.layer === 'implementing' && !FINAL.test(units[i].b || ''),
+      );
+      const paraRe = r.paragraph ? new RegExp(`Article\\s+${num}\\s*\\(\\s*${r.paragraph}\\s*\\)`, 'i') : null;
+      const rank = (i) => (units[i].k === 'annex' ? 0 : paraRe?.test(units[i].t) ? 1 : 2);
+      const ordered = l2.map((i, pos) => [i, pos]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([i]) => i);
+      out.implementing = ordered.slice(0, Math.max(related, 1)).map((i) => brief(i));
+      out.implementingCount = l2.length;
     } else if (first.l?.length) {
       out.citesProvisions = [...new Set(r.indices.flatMap((i) => units[i].l || []))].filter((id) => byId.has(id)).map((id) => ({ id, citation: label(units[byId.get(id)]), title: units[byId.get(id)].b }));
     }

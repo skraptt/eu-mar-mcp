@@ -40,7 +40,7 @@ export const TOOLS = [
     name: 'get_provision',
     title: 'Get a provision with its ESMA interpretation',
     description:
-      'Returns the full text of a provision. For MAR articles, also the delegated and implementing provisions that refer to it and the ESMA guidelines sections and Q&As that refer to it, most specific first. ' +
+      'Returns the text of a provision; for a paragraph citation ("Article 17(4a) MAR") only that paragraph, unless full=true. For MAR articles, also the delegated and implementing provisions that refer to it and the ESMA guidelines sections and Q&As that refer to it, most specific first. ' +
       'Accepts "Article 17 MAR", "Article 17(4) MAR", "Article 7(1)(b) MAR", "Recital 23 MAR", "Article 2 2016/957", "Article 4 CS MAD", "ESMA Q&A 5.1", "delay guidelines 5.1", ' +
       'or an id from search results ("MAR/17"). For guidance sections, lists the provisions they cite.',
     inputSchema: {
@@ -48,6 +48,7 @@ export const TOOLS = [
       properties: {
         provision: { type: 'string', description: 'Citation or id of the provision or guidance section.' },
         related: { type: 'integer', minimum: 0, maximum: 15, default: 6, description: 'How many related Level 2 provisions, ESMA guidance sections and Q&As to list (each).' },
+        full: { type: 'boolean', default: false, description: 'For a paragraph citation such as "Article 17(4a) MAR": return the whole article instead of only that paragraph.' },
       },
       required: ['provision'],
       additionalProperties: false,
@@ -98,7 +99,9 @@ function asText(name, r) {
   if (name === 'get_provision') {
     const parts = [block(r, true)];
     if (r.footnotes?.length) parts.push(`Footnotes:\n${r.footnotes.map((f) => `- ${f}`).join('\n')}`);
-    if (r.implementing?.length) parts.push(`Delegated and implementing provisions referring to this article:\n${r.implementing.map((g) => item(g)).join('\n')}`);
+    if (r.paragraphOnly) parts.splice(1, 0, `(Paragraph ${r.paragraphRequested} only; the whole article is ${r.fullLength} characters. Call get_provision with full=true for it.)`);
+    if (r.paragraphNotFound) parts.splice(1, 0, `(Paragraph ${r.paragraphRequested} could not be isolated; the whole article follows.)`);
+    if (r.implementing?.length) parts.push(`Delegated and implementing provisions referring to this article (${r.implementing.length} of ${r.implementingCount}; templates first):\n${r.implementing.map((g) => item(g)).join('\n')}`);
     if (r.guidance?.length) parts.push(`ESMA guidelines referring to this provision (${r.relatedCount} guidance units in total):\n${r.guidance.map((g) => item(g)).join('\n')}`);
     if (r.qas?.length) parts.push(`ESMA Q&As referring to this provision:\n${r.qas.map((g) => item(g)).join('\n')}`);
     if (r.citesProvisions?.length) parts.push(`Provisions cited:\n${r.citesProvisions.map((p) => `- ${p.citation}${p.title ? ` — ${p.title}` : ''}`).join('\n')}`);

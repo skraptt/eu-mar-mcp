@@ -31,7 +31,7 @@ fetched from EUR-Lex (Publications Office CELLAR) and esma.europa.eu every day.
 | Tool | What it does |
 |---|---|
 | `search_mar` | Searches all layers; filter by layer or document. Accepts questions or citations. |
-| `get_provision` | Full text of an article, recital or guidance section. For MAR articles, also the delegated and implementing provisions that refer to it and the ESMA guidelines sections and Q&As that refer to it, most specific first. For guidance, the provisions it cites. |
+| `get_provision` | Text of an article, recital or guidance section; for a paragraph citation ("Article 17(4a) MAR") only that paragraph, `full: true` for the whole article. For MAR articles, also the delegated and implementing provisions that refer to it and the ESMA guidelines sections and Q&As that refer to it, most specific first. For guidance, the provisions it cites. |
 | `remit_crosswalk` | Pairs MAR and REMIT provisions on the same subject (inside information, insider dealing, manipulation, STORs, disclosure and delay, sanctions …) with a note on where they differ, including rules with no counterpart. |
 | `list_documents` | Documents, fetch dates and links. |
 

@@ -58,6 +58,10 @@ test('provision references resolve', () => {
   const r = (s) => e.getProvision({ provision: s });
   assert.equal(r('Article 17 MAR').id, 'MAR/17');
   assert.equal(r('Article 17(4) MAR').paragraphRequested, '4');
+  const p4 = r('Article 17(4) MAR');
+  assert.ok(p4.paragraphOnly && /^4\. Fixture text: an issuer may delay/.test(p4.text) && !/as soon as possible of inside/.test(p4.text), 'only paragraph 4');
+  assert.match(e.getProvision({ provision: 'Article 17(4) MAR', full: true }).text, /^1\. /);
+  assert.ok(r('Article 17(9) MAR').paragraphNotFound, 'unknown paragraph falls back to the whole article');
   assert.equal(r('Art. 7 of the Market Abuse Regulation').id, 'MAR/7');
   assert.equal(r('Article 16').id, 'MAR/16');
   assert.equal(r('Article 2 2016/957').id, 'DR-2016-957/2');
@@ -73,6 +77,7 @@ test('provision references resolve', () => {
 test('an article comes with its Level 2 provisions and ESMA material', () => {
   const p = e.getProvision({ provision: 'Article 16 MAR' });
   assert.deepEqual(p.implementing.map((x) => x.id), ['DR-2016-957/2', 'DR-2016-957/5']);
+  assert.equal(e.getProvision({ provision: 'Article 16 MAR', related: 1 }).implementing.length, 1, 'related is respected');
   assert.deepEqual(p.qas.map((x) => x.id), ['ESMA-QA/5.3']);
   const d = e.getProvision({ provision: 'Article 17 MAR' });
   assert.ok(d.guidance.some((g) => g.id === 'ESMA-GL-DELAY/5.1'));
