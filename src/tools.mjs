@@ -100,8 +100,8 @@ function asText(name, r) {
     const parts = [block(r, true)];
     if (r.footnotes?.length) parts.push(`Footnotes:\n${r.footnotes.map((f) => `- ${f}`).join('\n')}`);
     if (r.paragraphOnly) parts.splice(1, 0, `(Paragraph ${r.paragraphRequested} only; the whole article is ${r.fullLength} characters. Call get_provision with full=true for it.)`);
-    if (r.paragraphNotFound) parts.splice(1, 0, `(Paragraph ${r.paragraphRequested} could not be isolated; the whole article follows.)`);
-    if (r.implementing?.length) parts.push(`Delegated and implementing provisions referring to this article (${r.implementing.length} of ${r.implementingCount}; templates first):\n${r.implementing.map((g) => item(g)).join('\n')}`);
+    if (r.paragraphNotFound) parts.splice(0, 0, `(No paragraph ${r.paragraphRequested} was found in ${r.citation}; the whole article is shown.)`);
+    if (r.implementing?.length) parts.push(`Delegated and implementing provisions referring to this article (${r.implementing.length} of ${r.implementingCount}${r.implementing.some((g) => /Annex/.test(g.citation)) ? '; templates first' : ''}):\n${r.implementing.map((g) => item(g)).join('\n')}`);
     if (r.guidance?.length) parts.push(`ESMA guidelines referring to this provision (${r.relatedCount} guidance units in total):\n${r.guidance.map((g) => item(g)).join('\n')}`);
     if (r.qas?.length) parts.push(`ESMA Q&As referring to this provision:\n${r.qas.map((g) => item(g)).join('\n')}`);
     if (r.citesProvisions?.length) parts.push(`Provisions cited:\n${r.citesProvisions.map((p) => `- ${p.citation}${p.title ? ` — ${p.title}` : ''}`).join('\n')}`);
